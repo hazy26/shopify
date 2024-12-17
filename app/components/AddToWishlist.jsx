@@ -12,11 +12,11 @@ export default function AddToWishlist({productId}) {
   }, [productId]);
 
   function getWishlist() {
-    return JSON.parse(Cookies.get('wishlist') ?? '{}');
+    return JSON.parse(Cookies.get('wishlisted') ?? '{}');
   }
 
   function setWishlist(wishlist) {
-    Cookies.set('wishlist', JSON.stringify(wishlist), {
+    Cookies.set('wishlisted', JSON.stringify(wishlist), {
       expires: 7,
       sameSite: 'strict',
     });

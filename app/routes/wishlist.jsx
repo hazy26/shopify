@@ -7,10 +7,12 @@ import Cookies from 'js-cookie';
 export async function loader({context, request}) {
   const cookie = request.headers
     .get('Cookie')
-    .split(';')
+    .split('; ')
     .map((cookie) => cookie.split('='));
 
-  const wishlist = cookie.find((item) => item[0] === 'wishlist');
+  const wishlist = cookie.find((item) => item[0] === 'wishlisted');
+
+  console.log(wishlist);
 
   if (wishlist) {
     const wishlistValue = JSON.parse(decodeURIComponent(wishlist[1]));
@@ -20,14 +22,18 @@ export async function loader({context, request}) {
       variables: {ids: productIds},
     });
 
-    return {products: data};
+    return {products: data.nodes};
   }
+
   return {products: []};
 }
 
 export default function Wishlist() {
   const data = useLoaderData();
-  const products = data;
+  const products = data.products;
+  data.products.map((product) => {
+    console.log(product);
+  });
 
   return (
     <section className="flex flex-col p-10 gap-12">
@@ -40,7 +46,7 @@ export default function Wishlist() {
             to={`/products/${product.handle}`}
           >
             <Image
-              data={product.images.nodes[0]}
+              data={product.featuredImage}
               aspectRatio="1/1"
               width={600}
               height={600}
