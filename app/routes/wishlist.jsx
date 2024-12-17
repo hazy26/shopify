@@ -12,16 +12,14 @@ export async function loader({context, request}) {
 
   const wishlist = cookie.find((item) => item[0] === 'wishlist');
 
-  console.log(wishlist);
-
   if (wishlist) {
-    console.log('yes');
     const wishlistValue = JSON.parse(decodeURIComponent(wishlist[1]));
     const productIds = Object.keys(wishlistValue);
 
     const data = await context.storefront.query(PRODUCTS_QUERY, {
       variables: {ids: productIds},
     });
+
     return {products: data};
   }
   return {products: []};
@@ -29,7 +27,7 @@ export async function loader({context, request}) {
 
 export default function Wishlist() {
   const data = useLoaderData();
-  const products = [];
+  const products = data;
 
   return (
     <section className="flex flex-col p-10 gap-12">
