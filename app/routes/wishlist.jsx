@@ -2,6 +2,7 @@ import {Link, useLoaderData} from '@remix-run/react';
 import {Money, Image} from '@shopify/hydrogen';
 import AddToWishlist from '~/components/AddToWishlist';
 import Pagetitle from '~/components/PageTitle';
+import Cookies from 'js-cookie';
 
 export async function loader({context, request}) {
   const cookie = request.headers
@@ -11,23 +12,24 @@ export async function loader({context, request}) {
 
   const wishlist = cookie.find((item) => item[0] === 'wishlist');
 
+  console.log(wishlist);
+
   if (wishlist) {
+    console.log('yes');
     const wishlistValue = JSON.parse(decodeURIComponent(wishlist[1]));
     const productIds = Object.keys(wishlistValue);
 
     const data = await context.storefront.query(PRODUCTS_QUERY, {
       variables: {ids: productIds},
     });
-
-    return {products: data.nodes};
+    return {products: data};
   }
-
   return {products: []};
 }
 
 export default function Wishlist() {
   const data = useLoaderData();
-  const products = data.products;
+  const products = [];
 
   return (
     <section className="flex flex-col p-10 gap-12">
